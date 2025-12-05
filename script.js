@@ -22,7 +22,6 @@
         icon: '&#8679;'
     };
 
-
     const button = document.createElement('button');
     button.innerHTML = CONFIG.icon;
     button.id = 'go-to-up-btn';
@@ -38,9 +37,14 @@
         transform: 'translateY(10px)'
     });
 
-  
-    document.body.appendChild(button);
-
+    // Safe append to body
+    if (document.body) {
+        document.body.appendChild(button);
+    } else {
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.appendChild(button);
+        });
+    }
 
     const handleScroll = () => {
         if (window.scrollY > CONFIG.showThreshold) {
@@ -54,7 +58,6 @@
         }
     };
 
-
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -62,10 +65,13 @@
         });
     };
 
-
     window.addEventListener('scroll', handleScroll);
     button.addEventListener('click', scrollToTop);
 
-
-    handleScroll();
+    // Initial check
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', handleScroll);
+    } else {
+        handleScroll();
+    }
 })();
